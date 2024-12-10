@@ -3,9 +3,9 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crazy UI Animation</title>
+    <title>Crazy Modern UI</title>
     <style>
-        /* General Reset */
+        /* Reset */
         * {
             margin: 0;
             padding: 0;
@@ -14,220 +14,142 @@
         }
 
         body {
-            background-color: #0e0e10;
             overflow: hidden;
-            color: white;
-        }
-
-        /* Background Particles */
-        canvas {
-            position: fixed;
-            top: 0;
-            left: 0;
-            z-index: -1;
-        }
-
-        /* Hero Section */
-        .hero {
             height: 100vh;
+            background: linear-gradient(-45deg, #1e1e2e, #232a33, #00172d, #001524);
+            background-size: 400% 400%;
+            animation: gradientAnimation 10s infinite alternate;
+            color: white;
+            position: relative;
+        }
+
+        /* Custom Cursor */
+        .cursor {
+            position: fixed;
+            width: 20px;
+            height: 20px;
+            background: radial-gradient(circle, rgba(0, 255, 234, 0.7), transparent);
+            border-radius: 50%;
+            pointer-events: none;
+            box-shadow: 0 0 10px #00ffee, 0 0 20px #00ffee;
+            z-index: 1000;
+            transform: translate(-50%, -50%);
+        }
+
+        /* Frosted Glass Container */
+        .container {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            display: flex;
+            gap: 30px;
+        }
+
+        .card {
+            position: relative;
+            width: 280px;
+            height: 350px;
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border-radius: 15px;
             display: flex;
             justify-content: center;
             align-items: center;
-            flex-direction: column;
             text-align: center;
-            position: relative;
-        }
-
-        .hero h1 {
-            font-size: 4rem;
-            text-transform: uppercase;
-            background: linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            animation: glitch 1s infinite;
-        }
-
-        .hero p {
-            margin-top: 20px;
-            font-size: 1.5rem;
-            color: #bbb;
-            opacity: 0.9;
-            animation: fadeIn 3s ease;
-        }
-
-        .hero .btn {
-            margin-top: 30px;
-            padding: 15px 40px;
-            font-size: 1.2rem;
-            background: #00ffea;
-            color: #0e0e10;
-            border: none;
-            border-radius: 50px;
-            cursor: pointer;
-            position: relative;
-            overflow: hidden;
+            color: #00ffee;
+            font-size: 1.3rem;
+            box-shadow: 0 8px 30px rgba(0, 255, 234, 0.3);
             transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
 
-        .hero .btn::before {
+        .card:hover {
+            transform: scale(1.1) rotate(2deg);
+            box-shadow: 0 20px 40px rgba(0, 255, 234, 0.5);
+        }
+
+        /* Magnetic Button */
+        .btn {
+            padding: 15px 30px;
+            font-size: 1rem;
+            color: #fff;
+            border: 2px solid #00ffee;
+            border-radius: 50px;
+            background: transparent;
+            cursor: pointer;
+            overflow: hidden;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .btn::before {
             content: '';
             position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: radial-gradient(circle, rgba(255, 0, 255, 0.3), transparent);
-            opacity: 0;
-            transition: opacity 0.5s ease;
-        }
-
-        .hero .btn:hover {
-            transform: scale(1.1);
-            box-shadow: 0 0 15px #00ffea, 0 0 30px #00ffea;
-        }
-
-        .hero .btn:hover::before {
-            opacity: 1;
-        }
-
-        /* Warp Portal Effect */
-        .warp {
-            position: fixed;
-            bottom: 0;
+            top: 0;
+            left: -100%;
             width: 100%;
-            height: 300px;
-            background: radial-gradient(circle, rgba(0, 255, 234, 0.2), transparent);
-            animation: pulse 2s infinite alternate;
-            z-index: -1;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, #00ffee, transparent);
+            transition: left 0.4s;
         }
 
-        /* Keyframes for Crazy Animations */
-        @keyframes glitch {
+        .btn:hover::before {
+            left: 100%;
+        }
+
+        .btn:hover {
+            color: #0e0e10;
+            background-color: #00ffee;
+            box-shadow: 0 0 10px #00ffee, 0 0 20px #00ffee;
+        }
+
+        /* Animated Gradient */
+        @keyframes gradientAnimation {
             0% {
-                text-shadow: 2px 2px #ff00ff, -2px -2px #00ffff;
-            }
-            50% {
-                text-shadow: -2px -2px #ff00ff, 2px 2px #00ffff;
+                background-position: left;
             }
             100% {
-                text-shadow: 2px -2px #ff00ff, -2px 2px #00ffff;
-            }
-        }
-
-        @keyframes pulse {
-            from {
-                transform: scale(1);
-                opacity: 0.7;
-            }
-            to {
-                transform: scale(1.2);
-                opacity: 1;
-            }
-        }
-
-        @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: translateY(50px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
+                background-position: right;
             }
         }
     </style>
 </head>
 <body>
-    <!-- Background Particles -->
-    <canvas id="particles"></canvas>
+    <!-- Cursor -->
+    <div class="cursor" id="cursor"></div>
 
-    <!-- Hero Section -->
-    <section class="hero">
-        <h1>Welcome to Crazy UI</h1>
-        <p>Where the animations go wild and creativity knows no limits.</p>
-        <button class="btn">Get Started</button>
-    </section>
+    <!-- Frosted Glass Cards -->
+    <div class="container">
+        <div class="card">Interactive UI</div>
+        <div class="card">Glassmorphism</div>
+        <div class="card">Magnetic Effects</div>
+    </div>
 
-    <!-- Warp Portal Effect -->
-    <div class="warp"></div>
+    <!-- Button -->
+    <div style="text-align: center; margin-top: 50px;">
+        <button class="btn" id="magneticBtn">Click Me</button>
+    </div>
 
-    <!-- JavaScript for Particles Background -->
+    <!-- JavaScript for Cursor & Magnetic Effect -->
     <script>
-        const canvas = document.getElementById('particles');
-        const ctx = canvas.getContext('2d');
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+        const cursor = document.getElementById("cursor");
+        document.addEventListener("mousemove", (e) => {
+            cursor.style.left = `${e.clientX}px`;
+            cursor.style.top = `${e.clientY}px`;
+        });
 
-        let particlesArray;
+        // Magnetic Button Effect
+        const btn = document.getElementById("magneticBtn");
+        btn.addEventListener("mousemove", (e) => {
+            const { left, top, width, height } = btn.getBoundingClientRect();
+            const x = e.clientX - left - width / 2;
+            const y = e.clientY - top - height / 2;
 
-        // Particle class
-        class Particle {
-            constructor(x, y, size, speedX, speedY) {
-                this.x = x;
-                this.y = y;
-                this.size = size;
-                this.speedX = speedX;
-                this.speedY = speedY;
-            }
+            btn.style.transform = `translate(${x * 0.2}px, ${y * 0.2}px)`;
+        });
 
-            update() {
-                this.x += this.speedX;
-                this.y += this.speedY;
-
-                if (this.size > 0.2) this.size -= 0.02;
-            }
-
-            draw() {
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fillStyle = '#00ffea';
-                ctx.fill();
-            }
-        }
-
-        // Initialize particles
-        function init() {
-            particlesArray = [];
-            for (let i = 0; i < 200; i++) {
-                const size = Math.random() * 5 + 1;
-                const x = Math.random() * canvas.width;
-                const y = Math.random() * canvas.height;
-                const speedX = Math.random() * 3 - 1.5;
-                const speedY = Math.random() * 3 - 1.5;
-
-                particlesArray.push(new Particle(x, y, size, speedX, speedY));
-            }
-        }
-
-        // Animate particles
-        function animate() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particlesArray.forEach((particle, index) => {
-                particle.update();
-                particle.draw();
-
-                if (particle.size <= 0.2) {
-                    particlesArray.splice(index, 1);
-                    const size = Math.random() * 5 + 1;
-                    const x = Math.random() * canvas.width;
-                    const y = Math.random() * canvas.height;
-                    const speedX = Math.random() * 3 - 1.5;
-                    const speedY = Math.random() * 3 - 1.5;
-
-                    particlesArray.push(new Particle(x, y, size, speedX, speedY));
-                }
-            });
-            requestAnimationFrame(animate);
-        }
-
-        init();
-        animate();
-
-        // Resize Canvas on Window Resize
-        window.addEventListener('resize', () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            init();
+        btn.addEventListener("mouseleave", () => {
+            btn.style.transform = "translate(0, 0)";
         });
     </script>
 </body>
