@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Crazy UI Animation</title>
+    <style>
+        /* General Reset */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Poppins', sans-serif;
+        }
+
+        body {
+            background-color: #0e0e10;
+            overflow: hidden;
+            color: white;
+        }
+
+        /* Background Particles */
+        canvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            text-align: center;
+            position: relative;
+        }
+
+        .hero h1 {
+            font-size: 4rem;
+            text-transform: uppercase;
+            background: linear-gradient(90deg, #ff00ff, #00ffff, #ff00ff);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: glitch 1s infinite;
+        }
+
+        .hero p {
+            margin-top: 20px;
+            font-size: 1.5rem;
+            color: #bbb;
+            opacity: 0.9;
+            animation: fadeIn 3s ease;
+        }
+
+        .hero .btn {
+            margin-top: 30px;
+            padding: 15px 40px;
+            font-size: 1.2rem;
+            background: #00ffea;
+            color: #0e0e10;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        .hero .btn::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: radial-gradient(circle, rgba(255, 0, 255, 0.3), transparent);
+            opacity: 0;
+            transition: opacity 0.5s ease;
+        }
+
+        .hero .btn:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0 15px #00ffea, 0 0 30px #00ffea;
+        }
+
+        .hero .btn:hover::before {
+            opacity: 1;
+        }
+
+        /* Warp Portal Effect */
+        .warp {
+            position: fixed;
+            bottom: 0;
+            width: 100%;
+            height: 300px;
+            background: radial-gradient(circle, rgba(0, 255, 234, 0.2), transparent);
+            animation: pulse 2s infinite alternate;
+            z-index: -1;
+        }
+
+        /* Keyframes for Crazy Animations */
+        @keyframes glitch {
+            0% {
+                text-shadow: 2px 2px #ff00ff, -2px -2px #00ffff;
+            }
+            50% {
+                text-shadow: -2px -2px #ff00ff, 2px 2px #00ffff;
+            }
+            100% {
+                text-shadow: 2px -2px #ff00ff, -2px 2px #00ffff;
+            }
+        }
+
+        @keyframes pulse {
+            from {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            to {
+                transform: scale(1.2);
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Background Particles -->
+    <canvas id="particles"></canvas>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Welcome to Crazy UI</h1>
+        <p>Where the animations go wild and creativity knows no limits.</p>
+        <button class="btn">Get Started</button>
+    </section>
+
+    <!-- Warp Portal Effect -->
+    <div class="warp"></div>
+
+    <!-- JavaScript for Particles Background -->
+    <script>
+        const canvas = document.getElementById('particles');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particlesArray;
+
+        // Particle class
+        class Particle {
+            constructor(x, y, size, speedX, speedY) {
+                this.x = x;
+                this.y = y;
+                this.size = size;
+                this.speedX = speedX;
+                this.speedY = speedY;
+            }
+
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+
+                if (this.size > 0.2) this.size -= 0.02;
+            }
+
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = '#00ffea';
+                ctx.fill();
+            }
+        }
+
+        // Initialize particles
+        function init() {
+            particlesArray = [];
+            for (let i = 0; i < 200; i++) {
+                const size = Math.random() * 5 + 1;
+                const x = Math.random() * canvas.width;
+                const y = Math.random() * canvas.height;
+                const speedX = Math.random() * 3 - 1.5;
+                const speedY = Math.random() * 3 - 1.5;
+
+                particlesArray.push(new Particle(x, y, size, speedX, speedY));
+            }
+        }
+
+        // Animate particles
+        function animate() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particlesArray.forEach((particle, index) => {
+                particle.update();
+                particle.draw();
+
+                if (particle.size <= 0.2) {
+                    particlesArray.splice(index, 1);
+                    const size = Math.random() * 5 + 1;
+                    const x = Math.random() * canvas.width;
+                    const y = Math.random() * canvas.height;
+                    const speedX = Math.random() * 3 - 1.5;
+                    const speedY = Math.random() * 3 - 1.5;
+
+                    particlesArray.push(new Particle(x, y, size, speedX, speedY));
+                }
+            });
+            requestAnimationFrame(animate);
+        }
+
+        init();
+        animate();
+
+        // Resize Canvas on Window Resize
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            init();
+        });
+    </script>
+</body>
+</html>
